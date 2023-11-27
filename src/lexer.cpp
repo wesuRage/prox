@@ -38,8 +38,8 @@ std::string shift(std::string &src) { // remove primeiro caracter de uma string 
 	return firstElement;
 }
 
-bool isAlpha(char src) { // verifica se é uma letra do alfabeto
-	return std::toupper(src) != std::tolower(src);
+bool isAlpha(char src) { // verifica se é uma letra do alfabeto ou um underscore
+	return std::toupper(src) != std::tolower(src) || src == '_';
 }
 
 bool isInt(char src){ // verifica se é um numero
@@ -68,20 +68,20 @@ std::vector<Token> tokenize(std::string sourceCode) { // classifica os tokens
 		} else if (sourceCode[0] == '}') {
 			tokens.push_back(token(LBRACE, shift(sourceCode)));
 		} else if (sourceCode[0] == '[') {
-                        tokens.push_back(token(RBRACKET, shift(sourceCode)));
-                } else if (sourceCode[0] == ']') {
-                        tokens.push_back(token(LBRACKET, shift(sourceCode)));
-                } else if (sourceCode[0] == ':') {
-                        tokens.push_back(token(COLON, shift(sourceCode)));
-                } else if (sourceCode[0] == ';') {
-                        tokens.push_back(token(SEMICOLON, shift(sourceCode)));
-                } else if (sourceCode[0] == ',') {
-                        tokens.push_back(token(COMMA, shift(sourceCode)));
-                } else if (sourceCode[0] == '>') {
-                        tokens.push_back(token(GT, shift(sourceCode)));
-                } else if (sourceCode[0] == '<') {
-                        tokens.push_back(token(LT, shift(sourceCode)));
-                } else if (sourceCode[0] == '+' || sourceCode[0] == '-' || sourceCode[0] == '*' || sourceCode[0] == '/' || sourceCode[0] == '%'){
+			tokens.push_back(token(RBRACKET, shift(sourceCode)));
+		} else if (sourceCode[0] == ']') {
+			tokens.push_back(token(LBRACKET, shift(sourceCode)));
+		} else if (sourceCode[0] == ':') {
+			tokens.push_back(token(COLON, shift(sourceCode)));
+		} else if (sourceCode[0] == ';') {
+			tokens.push_back(token(SEMICOLON, shift(sourceCode)));
+		} else if (sourceCode[0] == ',') {
+			tokens.push_back(token(COMMA, shift(sourceCode)));
+		} else if (sourceCode[0] == '>') {
+			tokens.push_back(token(GT, shift(sourceCode)));
+		} else if (sourceCode[0] == '<') {
+			tokens.push_back(token(LT, shift(sourceCode)));
+		} else if (sourceCode[0] == '+' || sourceCode[0] == '-' || sourceCode[0] == '*' || sourceCode[0] == '/' || sourceCode[0] == '%'){
 			tokens.push_back(token(BINARYOP, shift(sourceCode)));
 		}else if (sourceCode[0] == '=') {
 			if (sourceCode[1] == '>'){
@@ -97,7 +97,7 @@ std::vector<Token> tokenize(std::string sourceCode) { // classifica os tokens
 			// multicaracteres
 			if (isAlpha(sourceCode[0])){
 				std::string ident = "";
-				while (sourceCode.length() > 0 && isAlpha(sourceCode[0])){
+				while (sourceCode.length() > 0 && (isAlpha(sourceCode[0]) || isInt(sourceCode[0]))){
 					ident += shift(sourceCode);
 				}
 
