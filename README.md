@@ -1,2 +1,2 @@
-# prox
-Compilador da linguagem Prox: uma linguagem baseada em assembly
+# Prox
+Compilador da linguagem Prox: uma linguagem baseada em Assembly
