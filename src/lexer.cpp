@@ -59,62 +59,55 @@ std::vector<Token> tokenize(std::string sourceCode) { // classifica os tokens
     
 	while (sourceCode.length() > 0) {
 
-		if (sourceCode[0] == '(') {
-			tokens.push_back(token(RPAREN, shift(sourceCode)));
-		} else if (sourceCode[0] == ')') {
-			tokens.push_back(token(LPAREN, shift(sourceCode)));
-		} else if (sourceCode[0] == '{') {
-			tokens.push_back(token(RBRACE, shift(sourceCode)));
-		} else if (sourceCode[0] == '}') {
-			tokens.push_back(token(LBRACE, shift(sourceCode)));
-		} else if (sourceCode[0] == '[') {
-			tokens.push_back(token(RBRACKET, shift(sourceCode)));
-		} else if (sourceCode[0] == ']') {
-			tokens.push_back(token(LBRACKET, shift(sourceCode)));
-		} else if (sourceCode[0] == ':') {
-			tokens.push_back(token(COLON, shift(sourceCode)));
-		} else if (sourceCode[0] == ';') {
-			tokens.push_back(token(SEMICOLON, shift(sourceCode)));
-		} else if (sourceCode[0] == ',') {
-			tokens.push_back(token(COMMA, shift(sourceCode)));
-		} else if (sourceCode[0] == '>') {
-			tokens.push_back(token(GT, shift(sourceCode)));
-		} else if (sourceCode[0] == '<') {
-			tokens.push_back(token(LT, shift(sourceCode)));
-		} else if (sourceCode[0] == '+' || sourceCode[0] == '-' || sourceCode[0] == '*' || sourceCode[0] == '/' || sourceCode[0] == '%'){
-			tokens.push_back(token(BINARYOP, shift(sourceCode)));
-		}else if (sourceCode[0] == '=') {
-			if (sourceCode[1] == '>'){
-				shift(sourceCode);
-				shift(sourceCode);
-				tokens.push_back(token(ARROW, "=>"));
-			} else {
-				tokens.push_back(token(EQUALS, shift(sourceCode)));
-			}
-		} else if (isSkippable(sourceCode[0])) {
-			shift(sourceCode);
-		} else {
-			// multicaracteres
-			if (isAlpha(sourceCode[0])){
-				std::string ident = "";
-				while (sourceCode.length() > 0 && (isAlpha(sourceCode[0]) || isInt(sourceCode[0]))){
-					ident += shift(sourceCode);
-				}
+    switch (sourceCode[0]){
+      case '(': tokens.push_back(token(RPAREN, shift(sourceCode))); break;
+      case ')': tokens.push_back(token(LPAREN, shift(sourceCode))); break;
+      case '{': tokens.push_back(token(RBRACE, shift(sourceCode))); break;
+      case '}': tokens.push_back(token(LBRACE, shift(sourceCode))); break;
+      case '[': tokens.push_back(token(RBRACKET, shift(sourceCode))); break;
+      case ']': tokens.push_back(token(LBRACKET, shift(sourceCode))); break;
+      case '<': tokens.push_back(token(LT, shift(sourceCode))); break;
+      case '>': tokens.push_back(token(GT, shift(sourceCode))); break;
+      case ':': tokens.push_back(token(COLON, shift(sourceCode))); break;
+      case ';': tokens.push_back(token(SEMICOLON, shift(sourceCode))); break;
+      case ',': tokens.push_back(token(COMMA, shift(sourceCode))); break;
+      case '+' || '-' || '*' || '/' || '%': 
+        tokens.push_back(token(BINARYOP, shift(sourceCode)));
+        break;
+      case '=':
+        if (sourceCode[1] == '>'){
+          shift(sourceCode);
+          shift(sourceCode);
+          tokens.push_back(token(ARROW, "=>"));
+        } else {
+          tokens.push_back(token(EQUALS, shift(sourceCode)));
+        }
+        break;
 
-				tokens.push_back(token(IDENTIFIER, ident));
+      default:
+        if (isSkippable(sourceCode[0])) {
+          shift(sourceCode);
+        } else if (isAlpha(sourceCode[0])){
+          std::string ident = "";
+          while (sourceCode.length() > 0 && (isAlpha(sourceCode[0]) || isInt(sourceCode[0]))){
+            ident += shift(sourceCode);
+          }
 
-			} else if (isInt(sourceCode[0])){
-				std::string num = "";
-				while (sourceCode.length() > 0 && isInt(sourceCode[0])){	
-					num += shift(sourceCode);
-				}
-			
-				tokens.push_back(token(NUMBER, num));
-			} else {
-				std::cout << "Unexpected token: " << sourceCode[0] << std::endl;
-				shift(sourceCode);
-			}
-		}
+          tokens.push_back(token(IDENTIFIER, ident));
+
+        } else if (isInt(sourceCode[0])){
+          std::string num = "";
+          while (sourceCode.length() > 0 && isInt(sourceCode[0])){	
+            num += shift(sourceCode);
+          }
+        
+          tokens.push_back(token(NUMBER, num));
+        } else {
+          std::cout << "Unexpected token: " << sourceCode[0] << std::endl;
+          shift(sourceCode);
+        }
+        break;
+    }
 	}
 
 	return tokens;
@@ -139,5 +132,5 @@ int main() {
 	std::getline(std::cin, src);
 	printTokens(tokenize(src));
 
-    return 0;
+	return 0;
 }
