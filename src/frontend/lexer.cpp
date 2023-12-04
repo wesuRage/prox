@@ -1,35 +1,6 @@
 #include <iostream>
 #include <vector>
-
-enum TokenType { // lista de tokens
-    NUMBER,
-    IDENTIFIER,
-    RPAREN,
-    LPAREN,
-    RBRACE,
-    LBRACE,
-    RBRACKET,
-    LBRACKET,
-    EQUALS,
-    ARROW,
-    COLON,
-    SEMICOLON,
-    COMMA,
-    GT,
-    LT,
-    BINARYOP,
-    _EOF
-};
-
-struct Token { // tipo de token
-	TokenType type;
-	std::string value;
-
-	friend std::ostream& operator<<(std::ostream& os, const Token& obj) {
-		os << " type: " << obj.type << ", value: \"" << obj.value << "\" " ;	
-		return os;
-    }
-};
+#include "../../includes/lexer.h"
 
 std::string shift(std::string &src) { // remove primeiro caracter de uma string e retorna a mesma
 	std::string firstElement(1, src[0]);
@@ -50,7 +21,10 @@ bool isSkippable(char src){ // verifica se é um espaço em branco
 }
 
 Token token(TokenType type, std::string value) { // gera o objeto de token
-	return { type, value };
+	Token tk;
+	tk.type = type;
+	tk.value = value;
+	return tk;
 }
 
 std::vector<Token> tokenize(std::string sourceCode) { // classifica os tokens
@@ -70,7 +44,12 @@ std::vector<Token> tokenize(std::string sourceCode) { // classifica os tokens
 			case ':': tokens.push_back(token(COLON, shift(sourceCode))); break;
 			case ';': tokens.push_back(token(SEMICOLON, shift(sourceCode))); break;
 			case ',': tokens.push_back(token(COMMA, shift(sourceCode))); break;
-			case '+' || '-' || '*' || '/' || '%': tokens.push_back(token(BINARYOP, shift(sourceCode))); break;
+			case '.': tokens.push_back(token(DOT, shift(sourceCode))); break;
+			case '+': tokens.push_back(token(PLUS, shift(sourceCode))); break; 
+			case '-': tokens.push_back(token(MINUS, shift(sourceCode))); break;
+			case '*': tokens.push_back(token(STAR, shift(sourceCode))); break;
+			case '/': tokens.push_back(token(SLASH, shift(sourceCode))); break;
+			case '%': tokens.push_back(token(MODULUS, shift(sourceCode))); break;
 			case '=':
 				if (sourceCode[1] == '>'){
 					shift(sourceCode);
@@ -94,7 +73,7 @@ std::vector<Token> tokenize(std::string sourceCode) { // classifica os tokens
 
 				} else if (isInt(sourceCode[0])){
 					std::string num = "";
-					while (sourceCode.length() > 0 && isInt(sourceCode[0])){	
+					while (sourceCode.length() > 0 && isInt(sourceCode[0]) || sourceCode[0] == '.'){	
 						num += shift(sourceCode);
 					}
 
