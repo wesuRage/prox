@@ -2,6 +2,8 @@
 #define NODETYPE_H
 
 class NodeType {
-	//classe base pra nós
+	public:
+		const char* kind;
+
 };
 #endif
